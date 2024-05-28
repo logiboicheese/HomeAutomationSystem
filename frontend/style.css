@@ -1,0 +1,85 @@
+require('dotenv').config();
+
+const primaryColor = process.env.PRIMARY_COLOR || '#007BFF';
+const secondaryColor = process.env.SECONDARY_COLOR || '#6C757D';
+const backgroundColor = process.env.BACKGROUND_COLOR || '#F8F9FA';
+const textColor = process.env.TEXT_COLOR || '#212529';
+const buttonColor = process.env.BUTTON_COLOR || primaryColor;
+const hoverButtonColor = process.env.HOVER_BUTTON_COLOR || '#0056b3';
+const borderColor = process.env.BORDER_COLOR || '#dee2e6';
+
+const styles = `
+body {
+  background-color: ${backgroundColor};
+  color: ${textColor};
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  margin: 0;
+}
+
+header {
+  background: ${primaryColor};
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 24px;
+}
+
+.device-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.device-item {
+  background: white;
+  border: 1px solid ${borderColor};
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-name {
+  font-weight: bold;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: ${buttonColor};
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: ${hoverButtonColor};
+}
+
+.input {
+  border: 1px solid ${borderColor};
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+`;
+
+const fs = require('fs');
+fs.writeFile('style.css', styles, (err) => {
+  if (err) throw err;
+  console.log('Style.css has been saved!');
+});
