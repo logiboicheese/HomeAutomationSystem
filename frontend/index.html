@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Home Automation System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Home Automation Dashboard</h1>
+    </header>
+    <main>
+        <section id="device-status">
+            <h2>Device Status</h2>
+            <ul id="device-list">
+            </ul>
+        </section>
+        <section id="device-control">
+            <h2>Control Devices</h2>
+            <div id="control-buttons">
+            </div>
+        </section>
+    </main>
+    <script>
+        function toggleDevice(deviceId) {
+            console.log(`Toggling ${deviceId}`);
+        }
+
+        function fetchDevices() {
+            console.log('Fetching device list and status');
+        }
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            fetchDevices();
+        });
+    </script>
+</body>
+</html>
