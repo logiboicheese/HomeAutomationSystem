@@ -1,1 +1,1 @@
-# HomeAutomationSystem
+The HomeAutomationSystem is a Node.js application designed to power IoT-based smart home automation. It seamlessly orchestrates your IoT devices by leveraging a MongoDB backend for robust, scalable data management. With an easy-to-navigate Express app setup at its core, this platform integrates with "routes/deviceRoutes.js" to facilitate efficient device communications and control within your smart home ecosystem. Dive into a world where convenience meets technology, and take the first step towards an intelligent living experience.
