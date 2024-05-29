@@ -20,9 +20,10 @@ body {
 header {
   background: ${primaryColor};
   color: white;
-  padding: 10px 0;
+  padding: 20px 0;
   text-align: center;
-  font-size: 24px;
+  font-size: 26px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .device-list {
@@ -35,10 +36,17 @@ header {
   background: white;
   border: 1px solid ${borderColor};
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.device-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .device-name {
@@ -56,11 +64,12 @@ header {
   text-align: center;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn:hover {
   background-color: ${hoverButtonColor};
+  transform: translateY(-2px);
 }
 
 .input {
@@ -69,17 +78,22 @@ header {
   margin-bottom: 20px;
   width: 100%;
   box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: ${primaryColor};
+  outline: none;
 }
 
 .label {
   display: block;
   margin-bottom: 5px;
 }
-
 `;
 
 const fs = require('fs');
 fs.writeFile('style.css', styles, (err) => {
   if (err) throw err;
-  console.log('Style.css has been saved!');
+  console.log('Style.css has been saved with enhanced styles!');
 });
