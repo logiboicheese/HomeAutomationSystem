@@ -9,18 +9,33 @@
 <body>
     <header>
         <h1>Home Automation Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showDashboard(); return false;">Dashboard</a></li>
+                <li><a href="#" onclick="showAuthorPage(); return false;">Author</a></li>
+            </ul>
+        </nav>
     </header>
     <main>
-        <section id="device-status">
-            <h2>Device Status</h2>
-            <ul id="device-list">
-            </ul>
-        </section>
-        <section id="device-control">
-            <h2>Control Devices</h2>
-            <div id="control-buttons">
-            </div>
-        </section>
+        <div id="dashboard">
+            <section id="device-status">
+                <h2>Device Status</h2>
+                <ul id="device-list">
+                </ul>
+            </section>
+            <section id="device-control">
+                <h2>Control Devices</h2>
+                <div id="control-buttons">
+                </div>
+            </section>
+        </div>
+        <div id="author-page" style="display:none;">
+            <h2>About the Author</h2>
+            <p>Welcome to the author's page of the IoT Home Automation System project. This page is dedicated to providing more information about the creator behind this project.</p>
+            <p>Name: [Your Name Here]</p>
+            <p>Contact: [Your Contact Information]</p>
+            <p>Bio: [A short bio about yourself]</p>
+        </div>
     </main>
     <script>
         function toggleDevice(deviceId) {
@@ -29,6 +44,16 @@
 
         function fetchDevices() {
             console.log('Fetching device list and status');
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('author-page').style.display = 'none';
+        }
+
+        function showAuthorPage() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('author-page').style.display = 'block';
         }
 
         window.addEventListener('DOMContentLoaded', (event) => {
