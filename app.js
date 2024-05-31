@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const NodeCache = require("node-cache"); // You need to install this package
+const NodeCache = require("node-cache");
 const app = express();
 const port = process.env.PORT || 3000;
 const deviceRoutes = require('./routes/deviceRoutes');
@@ -15,35 +15,40 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(express.json());
 
-// Middleware to check cache
-app.use((req, res, next) => {
+const cacheMiddleware = (req, res, next) => {
   const key = `${req.method}_${req.originalUrl}`;
-  if (myCache.has(key)) {
+  const cachedResponse = myCache.get(key);
+  if (cachedResponse) {
     console.log('Cache hit');
-    return res.json(myCache.get(key));
+    return res.json(cachedResponse);
   }
   console.log('Cache miss');
-  // Pass a reference to the cache and the key to the next middleware
-  res.locals.cache = myCache;
-  res.locals.cacheKey = key;
+  const originalJson = res.json.bind(res);
+  res.json = (body) => {
+    myCache.set(key, body);
+    originalJson(body);
+  };
   next();
-});
+};
+
+app.use(cacheMiddleware);
 
 app.use('/devices', deviceRoutes);
 
 app.get('/', (req, res) => {
-  // Example of caching root path
-  const key = 'GET_/';
-  if (res.locals.cache.has(key)) {
-    return res.json(res.locals.cache.get(key));
-  }
+  res.json({ message: 'Welcome to the IoT Home Automation System' });
+});
 
-  const data = { message: 'Welcome to the IoT Home Automation System' };
-
-  res.locals.cache.set(key, data);
-  res.json(data);
+app.get('/heavy-calculation', (req, res) => {
+  performHeavyCalculation()
+    .then(result => res.json(result))
+    .catch(err => res.status(500).send(err.message));
 });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+function performHeavyCalculation() {
+  return Promise.resolve({ result: "Calculation result" });
+}
