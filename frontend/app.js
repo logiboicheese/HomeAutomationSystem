@@ -34,7 +34,7 @@ async function sendDeviceCommand(deviceId, command) {
     }
     const result = await response.json();
     console.log('command result:', result);
-    fetchDevices();
+    fetchDevices(); // Refresh the list of devices after sending a command
   } catch (error) {
     console.error('Error sending command to device:', error);
   }
@@ -53,10 +53,18 @@ function updateDevicesListUI(devices) {
     toggleButton.onclick = () => sendDeviceCommand(device.id, 'toggle');
     listItem.appendChild(toggleButton);
 
-    devicesListElement.appendChild(listElement);
+    devicesListElement.appendChild(listItem); // Fixed variable name here from 'listElement' to 'listItem'
   });
 }
 
+function startAutoRefresh(intervalInSeconds = 30) {
+  setInterval(() => {
+    console.log('Refreshing device list...');
+    fetchDevices();
+  }, intervalInSeconds * 1000); 
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  fetchDevices();
+  fetchDevices(); // Fetch devices when the document is loaded
+  startAutoRefresh(60); // Auto-refresh every 60 seconds
 });
