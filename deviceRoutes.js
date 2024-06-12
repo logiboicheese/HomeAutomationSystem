@@ -7,6 +7,12 @@ const PORT = process.env.PORT || 3000;
 const db = {
   lights: { status: 'off' },
   thermostat: { temperature: 20 },
+  updateLightStatus(status) {
+    this.lights.status = status;
+  },
+  updateTemperature(temp) {
+    this.thermostat.temperature = temp;
+  },
 };
 
 app.use(express.json());
@@ -22,7 +28,7 @@ app.post('/lights/status', (req, res) => {
     return res.status(400).send('Invalid status');
   }
 
-  db.lights.status = status;
+  db.updateLightStatus(status);
   res.send(`Lights turned ${status}`);
 });
 
@@ -37,7 +43,7 @@ app.post('/thermostat/temperature', (req, res) => {
     return res.status(400).send('Invalid temperature');
   }
 
-  db.thermostat.temperature = temperature;
+  db.updateTemperature(temperature);
   res.send(`Thermostat set to ${temperature}°C`);
 });
 
