@@ -18,41 +18,40 @@ router.get('/devices', (req, res) => {
 
 router.post('/devices', (req, res) => {
   const { name, type, state = 'off' } = req.body;
+  
   if (!name || !type) {
     return sendErrorResponse(res, 400, "Missing device name or type.");
   }
 
-  if (devices.find(device => device.name === name)) {
+  if (devices.some(device => device.name === name)) {
     return sendErrorResponse(res, 400, "Device name already exists. Please use a unique name.");
   }
 
   const newDevice = {
-    id: devices.reduce((maxId, device) => Math.max(maxId, device.id), 0) + 1,
+    id: devices.reduce((maxId, device) => Math.max(maxId, device.id), -1) + 1,
     name,
     type,
     state
   };
 
   devices.push(newDevice);
-  res.status(201).json(newDevice);
+  return res.status(201).json(newDevice);
 });
 
 router.put('/devices/:id', (req, res) => {
   const { id } = req.params;
-  const { name, type, state } = req.body;
 
   const deviceIndex = devices.findIndex(d => d.id == id);
   if (deviceIndex === -1) {
     return sendErrorResponse(res, 404, "Device not found.");
   }
 
-  const updatedDevice = { ...devices[deviceIndex], ...req.body };
-  devices[deviceIndex] = updatedDevice;
+  devices[deviceIndex] = { ...devices[deviceIndex], ...req.body };
 
-  res.status(200).json(updatedDevice);
+  res.status(200).json(devices[deviceIndex]);
 });
 
-router.patch('/devices/:udId/toggle', (req, res) => {
+router.patch('/devices/:id/toggle', (req, res) => {
   const { id } = req.params;
 
   const deviceIndex = devices.findIndex(d => d.id == id);
@@ -62,7 +61,7 @@ router.patch('/devices/:udId/toggle', (req, res) => {
 
   devices[deviceIndex].state = devices[deviceIndex].state === 'on' ? 'off' : 'on';
 
-  res.status(200).json({ id, state: devices[deviceIndex].state });
+  res.status(200).json({ id: devices[deviceIndex].id, state: devices[deviceIndex].state });
 });
 
 router.delete('/devices/:id', (req, res) => {
@@ -70,11 +69,11 @@ router.delete('/devices/:id', (req, res) => {
 
   const deviceIndex = devices.findIndex(d => d.id == id);
   if (deviceIndex === -1) {
-    return sendErrorResponse(res, 404, "Device not found.");
+  return sendErrorResponse(res, 404, "Device not found.");
   }
 
   devices.splice(deviceIndex, 1);
-  res.status(204).send();
+  return res.status(204).send();
 });
 
 module.exports = router;
