@@ -10,10 +10,10 @@ const deviceSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: String,
   type: String,
-  status: String, // Assumed to be "on" or "off"
+  status: String,
 });
 
-const Device = mongoose.model('Device', devicecareerSchema);
+const Device = mongoose.model('Device', deviceSchema);
 
 async function addDevice(deviceInfo) {
   try {
@@ -69,7 +69,7 @@ async function toggleDeviceStatus(id) {
     const device = await Device.findOne({ id });
     if (device) {
       const newStatus = device.status === "on" ? "off" : "on";
-      device.status = new status;
+      device.status = newStatus;
       await device.save();
       console.log(`Device status toggled to ${newStatus}.`);
     } else {
@@ -85,5 +85,5 @@ module.exports = {
   getDeviceById,
   updateDevice,
   deleteDevice,
-  toggleDeviceStatus, // Export the toggleDeviceStatus function
+  toggleDeviceStatus,
 };
