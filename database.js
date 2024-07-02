@@ -1,8 +1,10 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.DB_NAME;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
 async function connectDB() {
   try {
     await client.connect();
@@ -13,6 +15,7 @@ async function connectDB() {
     process.exit(1);
   }
 }
+
 async function disconnectDB() {
   try {
     await client.close();
@@ -21,27 +24,48 @@ async function disconnectDB() {
     console.error('Could not disconnect from MongoDB', error);
   }
 }
+
+async function fetchData(db, collectionName, query) {
+  return db.collection(collectionName).find(query).toArray();
+}
+
 async function getData(collectionName, query) {
   const db = await connectDB();
-  return db.collection(collectionClass).find(query).toArray();
+  return await fetchData(db, collectionName, query);
 }
-async function insertData(collectionName, data) {
-  const db = await connectDB();
+
+async function insertDataToDB(db, collectionName, data) {
   return db.collection(collectionName).insertOne(data);
 }
-async function updateData(collectionName, query, newData) {
+
+async function insertData(collectionName, data) {
   const db = await connectDB();
+  return await insertDataToDB(db, collectionName, data);
+}
+
+async function updateDataInDB(db, collectionName, query, newData) {
   return db.collection(collectionName).updateOne(query, { $set: newData });
 }
-async function deleteData(collectionName, query) {
+
+async function updateData(collectionName, query, newData) {
   const db = await connectDB();
+  return await updateDataInDB(db, collectionName, query, newData);
+}
+
+async function deleteDataFromDB(db, collectionName, query) {
   return db.collection(collectionName).deleteOne(query);
 }
+
+async function deleteJIdata(collectionName, query) {
+  const db = await connectDB();
+  return await deleteDataFromDB(db, collectionName, query);
+}
+
 module.exports = {
   connectDB,
   disconnectDB,
   getData,
   insertData,
   updateData,
-  deleteData,
+  deleteData: deleteJIdata,
 };
