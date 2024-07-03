@@ -26,39 +26,79 @@ async function disconnectDB() {
 }
 
 async function fetchData(db, collectionName, query) {
-  return db.collection(collectionName).find(query).toArray();
+  try {
+    return await db.collection(collectionName).find(query).toArray();
+  } catch (error) {
+    console.error(`Error fetching data from ${collectionName}`, error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
 }
 
 async function getData(collectionName, query) {
-  const db = await connectDB();
-  return await fetchData(db, collectionName, query);
+  try {
+    const db = await connectDB();
+    return await fetchData(db, collectionName, query);
+  } catch (error) {
+    console.error(`Error getting data from ${collectionName}`, error);
+    throw error;
+  }
 }
 
 async function insertDataToDB(db, collectionName, data) {
-  return db.collection(collectionName).insertOne(data);
+  try {
+    return await db.collection(collectionName).insertOne(data);
+  } catch (error) {
+    console.error(`Error inserting data into ${collectionName}`, error);
+    throw error;
+  }
 }
 
 async function insertData(collectionName, data) {
-  const db = await connectDB();
-  return await insertDataToDB(db, collectionName, data);
+  try {
+    const db = await connectDB();
+    return await insertDataToDB(db, collectionName, data);
+  } catch (error) {
+    console.error(`Error inserting data into ${collectionName}`, error);
+    throw error;
+  }
 }
 
 async function updateDataInDB(db, collectionName, query, newData) {
-  return db.collection(collectionName).updateOne(query, { $set: newData });
+  try {
+    return await db.collection(collectionName).updateOne(query, { $set: newData });
+  } catch (error) {
+    console.error(`Error updating data in ${collectionName}`, error);
+    throw error;
+  }
 }
 
 async function updateData(collectionName, query, newData) {
-  const db = await connectDB();
-  return await updateDataInDB(db, collectionName, query, newData);
+  try {
+    const db = await connectDB();
+    return await updateDataInDB(db, collectionName, query, newData);
+  } catch (error) {
+    console.error(`Error updating data in ${collectionName}`, error);
+    throw error;
+  }
 }
 
 async function deleteDataFromDB(db, collectionName, query) {
-  return db.collection(collectionName).deleteOne(query);
+  try {
+    return await db.collection(collectionName).deleteOne(query);
+  } catch (error) {
+    console.error(`Error deleting data from ${collectionName}`, error);
+    throw error;
+  }
 }
 
-async function deleteJIdata(collectionName, query) {
-  const db = await connectDB();
-  return await deleteDataFromDB(db, collectionName, query);
+async function deleteData(collectionName, query) {
+  try {
+    const db = await connectDB();
+    return await deleteDataFromDB(db, collectionName, query);
+  } catch (error) {
+    console.error(`Error deleting data from ${collectionName}`, error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -66,6 +106,6 @@ module.exports = {
   disconnectDB,
   getData,
   insertData,
-  updateData,
-  deleteData: deleteJIdata,
+  updateCData,
+  deleteData,
 };
