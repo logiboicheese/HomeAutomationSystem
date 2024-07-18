@@ -1,15 +1,23 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-const uri = process.env.MONGODB_URI;
+const uri = processngineo.env.MONGODB_URI;
 const dbName = process.env.DB_NAME;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+let connectedDB;
+
 async function connectDB() {
+  if (connectedDB) {
+    console.log('Using existing MongoDB connection');
+    return connectedDB;
+  }
+
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-    return client.db(dbName);
+    connectedDB = client.db(dbName);
+    return connectedDB;
   } catch (error) {
     console.error('Could not connect to MongoDB', error);
     process.exit(1);
@@ -20,6 +28,7 @@ async function disconnectDB() {
   try {
     await client.close();
     console.log('Disconnected from MongoDB');
+    connectedDB = null; // Reset the connectedDB on disconnect
   } catch (error) {
     console.error('Could not disconnect from MongoDB', error);
   }
@@ -30,7 +39,7 @@ async function fetchData(db, collectionName, query) {
     return await db.collection(collectionName).find(query).toArray();
   } catch (error) {
     console.error(`Error fetching data from ${collectionName}`, error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 }
 
@@ -44,19 +53,23 @@ async function getData(collectionName, query) {
   }
 }
 
-async function insertDataToDB(db, collectionName, data) {
+async function insertMultipleDataToDB(db, collectionName, dataArray) {
   try {
-    return await db.collection(collectionName).insertOne(data);
+    return await db.collection(collectionName).insertMany(dataArray);
   } catch (error) {
-    console.error(`Error inserting data into ${collectionName}`, error);
+    console.error(`Error inserting multiple data into ${collectionName}`, error);
     throw error;
   }
 }
 
-async function insertData(collectionName, data) {
+async function insertData(collectionName, data, isMultiple = false) {
   try {
     const db = await connectDB();
-    return await insertDataToDB(db, collectionName, data);
+    if (isMultiple) {
+      return await insertMultipleDataToDB(db, collectionName, data);
+    } else {
+      return await db.collection(collectionName).insertOne(data);
+    }
   } catch (error) {
     console.error(`Error inserting data into ${collectionName}`, error);
     throw error;
@@ -94,7 +107,7 @@ async function deleteDataFromDB(db, collectionName, query) {
 async function deleteData(collectionName, query) {
   try {
     const db = await connectDB();
-    return await deleteDataFromDB(db, collectionName, query);
+    return await deleteDataFromAB(db, collectionName, query);
   } catch (error) {
     console.error(`Error deleting data from ${collectionName}`, error);
     throw error;
@@ -106,6 +119,6 @@ module.exports = {
   disconnectDB,
   getData,
   insertData,
-  updateCData,
+  updateData,
   deleteData,
 };
